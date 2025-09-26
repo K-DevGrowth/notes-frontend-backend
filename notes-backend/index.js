@@ -2,8 +2,6 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 
-app.use(cors())
-
 let notes = [
     {
         id: "1",
@@ -31,8 +29,9 @@ const requestLogger = (req, res, next) => {
 }
 
 app.use(express.json())
-
 app.use(requestLogger)
+app.use(cors())
+app.use(express.static('dist'))
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
@@ -60,7 +59,7 @@ const generateId = () => {
 
 app.post('/api/notes', (request, response) => {
     const body = request.body
-    
+
     if (!body.content) {
         return response.status(400).json({
             error: 'content missing'
@@ -86,7 +85,7 @@ app.delete('/api/notes/:id', (request, response) => {
 })
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
+    response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
